@@ -1,0 +1,18 @@
+services:
+    google.client:
+        class: Google\Client
+    dbDumper:
+        class: App\Service\DbDumper
+    googleCloudApiClient:
+        class: App\Service\GoogleCloudApiClient
+        arguments:
+            - '@google.client'
+    dbDumpCommandProcessor:
+        class: App\Service\DbDumpCommandProcessor
+        arguments:
+            - '@dbDumper'
+            - '@googleCloudApiClient'
+    dbDumpCommand:
+        class: App\Command\DbDumpCommand
+        arguments:
+            - '@dbDumpCommandProcessor'
