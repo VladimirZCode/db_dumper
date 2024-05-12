@@ -8,15 +8,16 @@ Features of the dumper:
 
 ## Installation
 
-Pull or download the following folders and files:
+Pull or download the following necessary folders and files:
 
 ```
-src, .env.dist, application.php, composer.json, composer.lock
+dbdump, src, .env.dist, google-service-account-keys.json, application.php, composer.json, composer.lock
 ```
 
 ### Configuration
 
  - Create your .env file from .env.dist.
+ - Fill "DB_DUMP_FOLDER_ID". Copy it from the Google Drive.
  - Example of "DB_DUMP_COMMANDS_LIST" to create and download the database dump via SSH:
 
  ```
@@ -24,6 +25,7 @@ src, .env.dist, application.php, composer.json, composer.lock
  ```
 
  - Create your google-service-account-keys.json file from google-service-account-keys.json.dist with the credentials.
+ - Create a project on https://console.cloud.google.com/. Register there as a developer, get an authorization key for the google-service-account-keys.json file.
 
 Install the dependencies:
 
