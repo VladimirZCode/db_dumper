@@ -10,6 +10,7 @@ use Exception;
 class DbDumper implements DbDumperInterface
 {
     private OutputInterface $output;
+    private string $currentDate;
 
     public function setOutput(OutputInterface $output): DbDumperInterface
     {
@@ -25,13 +26,12 @@ class DbDumper implements DbDumperInterface
             }
         }
 
-        $curDate = new DateTimeImmutable();
-        $curDate = $curDate->format('Ymd_His');
-
-        $fileName = sprintf($_ENV['DB_DUMP_FILE_NAME_TPL'], $curDate);
+        $fileName = sprintf($_ENV['DB_DUMP_FILE_NAME_TPL'], $this->getCurrentDate());
         $dumpFile = new DumpFile($_ENV['DB_DUMP_FILE_PATH'], $fileName);
 
         $commands = $this->getCommandsArray($_ENV['DB_DUMP_COMMANDS_LIST'], $dumpFile->getFullPath());
+
+        $this->output("Database dump started...");
 
         foreach($commands as $command) {
             exec($command);
@@ -86,6 +86,8 @@ class DbDumper implements DbDumperInterface
         string $valueToExchange,
         string $specifier = '%s'
     ): array {
+        $commandsListStr = $this->replaceEnvVariables($commandsListStr);
+
         $specifiersNumber = substr_count($commandsListStr, $specifier);
         $strValues = [];
         for($i = 0; $i < $specifiersNumber; $i++) {
@@ -94,5 +96,38 @@ class DbDumper implements DbDumperInterface
         $commandsListStr = sprintf($commandsListStr, ...$strValues);
 
         return explode(';', $commandsListStr);
+    }
+
+    private function replaceEnvVariables(string $str): string
+    {
+        return preg_replace_callback(
+            '/\$([A-Z_]+)/',
+            function ($matches) {
+                return $this->getVariableValue($matches[1]);
+            },
+            $str
+        );
+    }
+
+    private function getVariableValue(string $name): string
+    {
+        $specialVariables = [
+            'CURRENT_DATE' => fn() => $this->getCurrentDate(),
+        ];
+
+        if (isset($specialVariables[$name])) {
+            return $specialVariables[$name]();
+        }
+
+        return $_ENV[$name] ?? $name;
+    }
+
+    private function getCurrentDate(): string
+    {
+        if (empty($this->currentDate)) {
+            $this->currentDate = (new DateTimeImmutable())->format('Ymd_His');
+        }
+
+        return $this->currentDate;
     }
 }

@@ -33,6 +33,8 @@ class DbDumpCommandProcessor extends DbDumpCommandProcessorAbstract implements D
             return false;
         }
 
+        $result = true;
+
         if ($_ENV['UPLOAD_TO_CLOUD']) {
             $result = $this->cloudApiClient
                 ->setDumpFile($dumpFile)
