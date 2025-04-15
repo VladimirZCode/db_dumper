@@ -24,8 +24,8 @@ dbdump, src, .env.dist, google-service-account-keys.json, application.php, compo
  'ssh user@192.168.16.2 mysqldump -hdb -udb -pdb --databases db --skip-comments | gzip -c > %s; scp user@192.168.16.2:%s .'
  ```
 
- - Create your google-service-account-keys.json file from google-service-account-keys.json.dist with the credentials.
  - Create a project on https://console.cloud.google.com/. Register there as a developer, get an authorization key for the google-service-account-keys.json file.
+ - Create your google-service-account-keys.json file from google-service-account-keys.json.dist with the credentials.
 
 Install the dependencies:
 
