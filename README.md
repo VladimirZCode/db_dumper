@@ -24,8 +24,18 @@ dbdump, src, .env.dist, google-service-account-keys.json, application.php, compo
  'ssh user@192.168.16.2 mysqldump -hdb -udb -pdb --databases db --skip-comments | gzip -c > %s; scp user@192.168.16.2:%s .'
  ```
 
- - Create a project on https://console.cloud.google.com/. Register there as a developer, get an authorization key for the google-service-account-keys.json file.
+#### How to set up the Google Cloud API and the Google Drive
+
+Helpful instruction: https://www.labnol.org/google-api-service-account-220404
+
+ - Create a project on https://console.cloud.google.com/.
+ - Enable Google APIs: click APIs & Services in the left menu, then click on Enable APIs and Services. Search for Google Drive API, click Enable button.
+ - Create a Service Account: in APIs & Services, click on Credentials, click on Create credentials and choose Service Account. Name the account as "db-dumper".
+ - Create a Key File: search for IAM and Admin, choose Service accounts. Fron Actions menu choose Manage keys. Click Add key, JSON.
+ - You will get an authorization key for the google-service-account-keys.json file.
  - Create your google-service-account-keys.json file from google-service-account-keys.json.dist with the credentials.
+ - Create a new folder on your Google Drive. Share the folder with the Email of the Google Cloud Service account which I created. It is similar to service-account@db-dumper.iam.gserviceaccount.com.
+ - Open the folder on the Google Drive, copy the generated hash of the folder from the page address and insert it into the DB_DUMP_FOLDER_ID variable in .env file.
 
 Install the dependencies:
 
@@ -82,14 +92,6 @@ To fix:
 /Applications/Docker.app/Contents/MacOS/install remove-vmnetd
 sudo /Applications/Docker.app/Contents/MacOS/install vmnetd
 ```
-
-## How to set up the Google Cloud API and the Google Drive
-
-Helpful instruction: https://www.labnol.org/google-api-service-account-220404
-
-Create a new folder on the Google Drive.
-Email of the Google Cloud Service account which I have to share the folder:
-service-account@db-dumper.iam.gserviceaccount.com
 
 ## Information for developers
 
